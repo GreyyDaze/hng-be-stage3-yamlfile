@@ -1,0 +1,1154 @@
+openapi: 3.0.3
+info:
+  title: My API
+  description: API design for various features according to OpenAPI specification.
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/AMINAHRASHIDBSAIF20/hng-my-group-apis/1.0.0
+  - url: https:/.example.com/v1
+    description: Main API Server
+
+paths:
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      name:
+                        type: string
+                      avatarUrl:
+                        type: string
+                        format: uri
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+
+  /auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Invalid request
+
+  /auth/magic-link:
+    post:
+      summary: Send magic link for authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Magic link sent successfully
+        '400':
+          description: Invalid request
+
+  /auth/social/{provider}:
+    get:
+      summary: Social authentication
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, facebook, github]
+      responses:
+        '200':
+          description: Successful authentication
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+
+  /auth/change-password:
+    post:
+      summary: Change user password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+
+  /messages/send-email:
+    post:
+      summary: Send an email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                  format: email
+                subject:
+                  type: string
+                body:
+                  type: string
+      responses:
+        '200':
+          description: Email sent successfully
+        '400':
+          description: Invalid request
+
+  /payments/stripe:
+    post:
+      summary: Process Stripe payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+                source:
+                  type: string
+      responses:
+        '200':
+          description: Payment processed successfully
+        '400':
+          description: Invalid request
+        '402':
+          description: Payment required
+
+  /payments/flutterwave:
+    post:
+      summary: Process Flutterwave payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+                cardNumber:
+                  type: string
+                cvv:
+                  type: string
+                expiryDate:
+                  type: string
+      responses:
+        '200':
+          description: Payment processed successfully
+        '400':
+          description: Invalid request
+        '402':
+          description: Payment required
+
+  /payments/lemonsqueezy:
+    post:
+      summary: Process LemonSqueezy payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+                paymentMethod:
+                  type: string
+      responses:
+        '200':
+          description: Payment processed successfully
+        '400':
+          description: Invalid request
+        '402':
+          description: Payment required
+
+  /users:
+    get:
+      summary: Get list of users
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    name:
+                      type: string
+                    avatarUrl:
+                      type: string
+                      format: uri
+        '401':
+          description: Unauthorized
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  name:
+                    type: string
+                  avatarUrl:
+                    type: string
+                    format: uri
+        '404':
+          description: User not found
+
+    put:
+      summary: Update user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Invalid request
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+  /superadmin/users:
+    get:
+      summary: Get all users for superadmin
+      responses:
+        '200':
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    name:
+                      type: string
+                    avatarUrl:
+                      type: string
+                      format: uri
+        '401':
+          description: Unauthorized
+
+  /superadmin/orgs:
+    get:
+      summary: Get all organizations for superadmin
+      responses:
+        '200':
+          description: A list of all organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    users:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          name:
+                            type: string
+                          avatarUrl:
+                            type: string
+                            format: uri
+        '401':
+          description: Unauthorized
+
+  /superadmin/payments:
+    get:
+      summary: Get all payments for superadmin
+      responses:
+        '200':
+          description: A list of all payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    amount:
+                      type: number
+                    currency:
+                      type: string
+                    provider:
+                      type: string
+                    status:
+                      type: string
+        '401':
+          description: Unauthorized
+
+  /superadmin/activity-log:
+    get:
+      summary: Get activity log for superadmin
+      responses:
+        '200':
+          description: Activity log details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    action:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: date-time
+        '401':
+          description: Unauthorized
+
+  /settings:
+    get:
+      summary: Get settings
+      responses:
+        '200':
+          description: Application settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowRegistrations:
+                    type: boolean
+                  defaultUserRole:
+                    type: string
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allowRegistrations:
+                  type: boolean
+                defaultUserRole:
+                  type: string
+      responses:
+        '200':
+          description: Settings updated successfully
+        '400':
+          description: Invalid request
+
+  /profile:
+    get:
+      summary: Get user profile
+      responses:
+        '200':
+          description: User profile details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  name:
+                    type: string
+                  avatarUrl:
+                    type: string
+                    format: uri
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update user profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                avatarUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Invalid request
+
+  /landing-pages/privacy-policy:
+    get:
+      summary: Get Privacy Policy page content
+      responses:
+        '200':
+          description: Privacy Policy content
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Page not found
+
+  /landing-pages/about-us:
+    get:
+      summary: Get About Us page content
+      responses:
+        '200':
+          description: About Us content
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Page not found
+
+  /contact-us:
+    post:
+      summary: Contact Us form submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Form submitted successfully
+        '400':
+          description: Invalid request
+
+  /charts:
+    get:
+      summary: Retrieve all data for charts
+      responses:
+        '200':
+          description: A list of charts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                          value:
+                            type: number
+        '500':
+          description: Internal server error
+
+  /content-items:
+    get:
+      summary: Retrieve all content items
+      responses:
+        '200':
+          description: A list of content items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    userId:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    content:
+                      type: string
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new content item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                userId:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+  /content-items/{userId}:
+    get:
+      summary: Retrieve content items based on user ID
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user whose content items are to be retrieved
+      responses:
+        '200':
+          description: A list of content items for the specified user ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    userId:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    content:
+                      type: string
+        '404':
+          description: No content items found for the specified user ID
+        '500':
+          description: Internal server error
+
+  /notifications/{userId}:
+    get:
+      summary: Retrieve notifications for a specific user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user whose notifications are to be retrieved
+      responses:
+        '200':
+          description: A list of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    user_id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                    message:
+                      type: string
+                    read:
+                      type: boolean
+        '404':
+          description: User not found or no notifications found for the specified user ID
+        '500':
+          description: Internal server error
+
+  /blog-posts:
+    get:
+      summary: Retrieve all blog posts
+      responses:
+        '200':
+          description: A list of blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    author_id:
+                      type: string
+                      format: uuid
+        '500':
+          description: Internal server error
+
+  /blog-posts/{id}:
+    get:
+      summary: Retrieve a blog post based on user ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user who authored the blog post
+      responses:
+        '200':
+          description: The blog post matching the user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  author_id:
+                    type: string
+                    format: uuid
+        '404':
+          description: Blog post not found for the specified user ID
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new blog post
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user who authored the blog post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                content:
+                  type: string
+                author_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+  /invite-links:
+    get:
+      summary: Retrieve all invite links
+      responses:
+        '200':
+          description: A list of invite links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    inviter_id:
+                      type: string
+                      format: uuid
+                    invitee_email:
+                      type: string
+                    token:
+                      type: string
+                    status:
+                      type: string
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new invite link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                inviter_id:
+                  type: string
+                  format: uuid
+                invitee_email:
+                  type: string
+                token:
+                  type: string
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+  /languages:
+    get:
+      summary: Retrieve all languages
+      responses:
+        '200':
+          description: A list of languages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    code:
+                      type: string
+                    name:
+                      type: string
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new language
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                code:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+  /regions:
+    get:
+      summary: Retrieve all regions
+      responses:
+        '200':
+          description: A list of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    code:
+                      type: string
+                    name:
+                      type: string
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new region
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                code:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+  /email-templates:
+    get:
+      summary: Retrieve all email templates
+      responses:
+        '200':
+          description: A list of email templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    subject:
+                      type: string
+                    body:
+                      type: string
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new email template
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user for whom the email template is created
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                subject:
+                  type: string
+                body:
+                  type: string
+      responses:
+        '200':
+          description: Email template successfully created
+        '400':
+          description: Bad request, invalid input, or missing required fields
+        '500':
+          description: Internal server error
+
+
+  /invite-links/{userId}:
+    get:
+      summary: Retrieve invite links based on user ID
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: The ID of the user whose invite links to fetch
+      responses:
+        '200':
+          description: A list of invite links for the specified user ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    inviter_id:
+                      type: string
+                      format: uuid
+                    invitee_email:
+                      type: string
+                    token:
+                      type: string
+                    status:
+                      type: string
+        '404':
+          description: No invite links found for the specified user ID
+        '500':
+          description: Internal server error
+  
+  /cookies/consent:
+    post:
+      summary: Manage user consent for cookies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                consent:
+                  type: boolean
+      responses:
+        '200':
+          description: Consent recorded
+
+  /waitlist:
+    post:
+      summary: Join waitlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '201':
+          description: Added to waitlist
+
+  /marketing:
+    get:
+      summary: Get marketing page
+      responses:
+        '200':
+          description: Marketing page content
+
+  /invite:
+    post:
+      summary: Send an invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Invitation sent
+
+  /user/export:
+    get:
+      summary: Export user data
+      responses:
+        '200':
+          description: User data export
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+    
+  /data/search:
+    get:
+      summary: Search and sort other data
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: sort
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of other data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    category:
+                      type: string
